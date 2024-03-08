@@ -1,5 +1,6 @@
 #include <iostream>
 
+
 struct BinaryNode
 {
     int data;
@@ -34,6 +35,7 @@ bool search(BinaryNode* root, int data){
     else if(data < root-> data) return search(root->left, data);
     else return search(root->right, data);
 }
+
 
 int main(){
     BinaryNode* root = nullptr;
