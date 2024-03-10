@@ -1,4 +1,6 @@
+#include <iostream>
 #include "NodoGeneral.h"
+
 
 template< class T >
 NodoGeneral<T>::NodoGeneral() {
@@ -7,7 +9,7 @@ NodoGeneral<T>::NodoGeneral() {
 
 template< class T >
 NodoGeneral<T>::~NodoGeneral() {
-    std::list< NodoGeneral<T> >::iterador it;
+    descIterator it;
     for (it = this->desc.begin(); it != this->desc.end(); it++)
         delete *it;
     this->desc.clear();
@@ -38,7 +40,7 @@ void NodoGeneral<T>::adicionarDesc(T& nval) {
 template< class T >
 bool NodoGeneral<T>::eliminarDesc(T& val) {
     // buscar el nodo con el valor dado
-    std::list< NodoGeneral<T>* >::iterator it;
+    descIterator it;
     NodoGeneral<T> *aux;
     bool eliminado = false;
 
@@ -71,7 +73,7 @@ int NodoGeneral<T>::altura() {
     alt = 0;
   } else {
     int alth;
-    std::list< NodoGeneral<T>* >::iterator it;
+    descIterator it;
     for (it = this->desc.begin(); it != this->desc.end(); it++) {
       alth = (*it)->altura();
       if (alt < alth+1)
@@ -85,7 +87,7 @@ int NodoGeneral<T>::altura() {
 template< class T >
 void NodoGeneral<T>::preOrden() {
   std::cout << this->dato << " ";
-  std::list< NodoGeneral<T>* >::iterator it;
+  descIterator it;
   for (it = this->desc.begin(); it != this->desc.end(); it++) {
     (*it)->preOrden();
   }

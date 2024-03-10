@@ -8,6 +8,8 @@ protected:
   T dato;
   std::list<NodoGeneral<T> *> desc;
 
+  using descIterator = typename std::list<NodoGeneral<T>*>::iterator;
+
 public:
   NodoGeneral();
   ~NodoGeneral();
@@ -20,7 +22,5 @@ public:
   int altura();
   void preOrden();
 };
-
-#include "NodoGeneral.hxx"
 
 #endif
