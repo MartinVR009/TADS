@@ -191,6 +191,8 @@ class Node{
             }
         }
 
+        
+
         bool search(Node* node, A var){
             if(node == nullptr){
                 return false;
@@ -259,7 +261,7 @@ class Tree{
 
     void levelOrderTraversal(){
         root->levelOrderTraversal(*root);
-    }
+    } 
 
 };
 
