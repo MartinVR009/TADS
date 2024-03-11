@@ -75,10 +75,7 @@ class BinaryNode
     /*
     int altura();
     int tamano();
-    bool insertar(T val);
     bool eliminar(T val)
-    +
-    bool buscar(T val);
     void preOrden();
     void inOrden();
     void posOrden();

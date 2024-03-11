@@ -38,6 +38,9 @@ class Node{
             return data;
         }
 
+        std::list<Node*> getDesc(){
+            return desc;
+        }
         void setData(A &var){
             data = var;
         }   
@@ -88,6 +91,18 @@ class Node{
             return maxHeight + 1;
         }
 
+        int size(Node* node){
+            if(node == nullptr){
+                return 0;
+            }else{
+                subSize = 0;
+                descIterator it;
+                for(it = node->desc.begin(); it != node->desc.end(); it++){
+                    subSize += size(*it);
+                }
+                return subSize + 1;
+            }
+        }
         /*void preOrden();*/
         /*Procedimiento preOrden(nodo):
         Si nodo no es nulo:
@@ -103,7 +118,7 @@ class Node{
             if(node != NULL){
                 std::cout<<node->data<<"\n";
 
-                descIterator = it;
+                descIterator it;
                 for(it = node->desc.begin(); it!= node->desc.end(); it++){
                     (*it)->preOrder(*it);
                 }
@@ -121,13 +136,14 @@ class Node{
 
         void postOrder(Node* node){
             if(node != NULL){
-                descIterator = it;
+                descIterator it;
                 for(it = node->desc.begin(); it!= node->desc.end(); it++){
                     (*it)->postOrder(*it);
                 }
                 std::cout<<node->data<<"\n";
             }
         }
+
         /*Procedimiento nivelOrden(nodo):
         Si nodo no es nulo:
             1. Crear una cola vacía.
@@ -137,14 +153,57 @@ class Node{
                 b. Encolar todos los descendientes del nodo desencolado.
         */
 
-        void levelOrderTrasversal(Node* node){
-            if(node == NULL)
+        void levelOrderTraversal(Node* node){
+            if(node == nullptr)
                 return;
             
             std::queue<Node*> levelOrderQ;
             levelOrderQ.push(node);
 
             while(!levelOrderQ.empty()){
+                Node * temp = levelOrderQ.front();
+                levelOrderQ.pop();
+                std::cout<<temp->data << " ";
+
+                descIterator it = temp->desc.begin();
+                for(; it != temp->desc.end(); it++)
+                    levelOrderQ.push(*it);
+                
+                std::cout<<"\n";
+            }
+        }
+
+        bool addNode(Node* &node, A father, A var){
+            if(node == nullptr){
+                return false;
+            }else{ 
+                if(node->data == father){
+                     node->addDesc(var);
+                    return true
+                }else{
+                    descIterator it;
+                    for(it = node->desc.begin(); it != node->desc.end(); it++){
+                        if((*it)->addNode(*it, father, var))
+                            return true;
+                    }
+                    return false;
+                }
+            }
+        }
+
+        bool search(Node* node, A var){
+            if(node == nullptr){
+                return false;
+            }else{
+                if(node->data == var){
+                    return true;
+                }else{
+                    descIterator it = node->desc.begin();
+                    for(; it != node->desc.end(); it++){
+                        if((*it)->search(*it, var)) return true;
+                    }
+                    return false;
+                }
                 
             }
         }
@@ -153,30 +212,54 @@ class Node{
 
 template <typename T>
 class Tree{
-    struct Node<T>* root = NULL;
-    bool isEmpty(){return root == NULL;}
+    struct Node<T>* root = nullptr;
+    bool isEmpty(){return root == nullptr;}
 
-    void fijarRaiz(Node<T>* nraiz){
-        
+    Node<T>* getRoot(){
+        return root;
+    }
+
+    void newRoot(Node<T>* nroot){
+        root = nroot;
     }
 
     unsigned int altura(){
-        if(isEmpty){
-            return -1;
+        return root->height();
+    } 
+
+    unsigned int size(){
+        return root->size(*root);
+    }
+
+    bool addNode(T father, T n){
+        if(!isEmpty()){
+            return root->addNode(*root, father, n);
         }else{
-            return root->altura(0);
+            root = root->GetNewNode(n);
+            return true;
         }
     }
 
-    /*NodoGeneral<T>* obtenerRaiz();
-    void fijarRaiz(NodoGeneral<T>* nraiz);
+    /*
     bool insertarNodo(T padre, T n);
     bool eliminarNodo(T n); 
-    bool buscar(T n);
-    unsigned int tamano();
-    void preOrden();
-    void posOrden();
-    void nivelOrden();*/
+
+    */
+    bool search(T n){
+        return root->search(*root,n);
+    }
+
+    void preOrder(){
+        root->preOrder(*root);
+    }
+
+    void postOrder(){
+        root->postOrder(*root);
+    }
+
+    void levelOrderTraversal(){
+        root->levelOrderTraversal(*root);
+    }
 
 };
 
