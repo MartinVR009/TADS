@@ -72,13 +72,42 @@ class BinaryNode
         this->data = data;
     }
 
+    void preOrder(BinaryNode* node){
+        if(node != nullptr){
+            std::cout<<node->data;
+            preOrder(node->left);
+            preOrder(node->right);
+        }
+    }
+
+    void postOrder(BinaryNode* node){
+        if(node != nullptr){
+            posOrder(node->left);
+            posOrder(node->right);
+            std::cout<<node->data;
+        }
+    }
+    void inOrder(BinaryNode* node){
+        if(node != nullptr){
+            inOrder(node->left);
+            std::cout<<node->data;
+            inOrder(node->right);
+        }
+    }
+    
+/*El recorrido por niveles en un árbol binario sigue el siguiente algoritmo:
+
+Se comienza por visitar el nodo raíz.
+Luego, se visitan los nodos de cada nivel, de izquierda a derecha, antes de pasar al siguiente nivel.
+Se repite este proceso hasta haber visitado todos los nodos del árbol.*/
+    void levelOrderTraversal(BinaryNode* node){
+
+    }
+
     /*
     int altura();
     int tamano();
     bool eliminar(T val)
-    void preOrden();
-    void inOrden();
-    void posOrden();
     void nivelOrden();*/
 };
 
