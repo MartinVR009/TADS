@@ -11,15 +11,19 @@ class BinaryNode
         BinaryNode* right;
 
     public:
-    BinaryNode(){
-        this->left = nullptr;
-        this->right = nullptr;
-    }
+    BinaryNode():left(nullptr), right(nullptr) {}
 
-    BinaryNode(T data){
-        this->left = nullptr;
-        this->right = nullptr;
-        this->data = data;
+    BinaryNode(T data): data(data), left(nullptr), right(nullptr) {}
+
+    ~BinaryNode(){
+        if(left != nullptr){
+            delete left;
+            left = nullptr;
+        }
+        if(right != nullptr){
+            delete right;
+            right = nullptr;
+        }
     }
 
     bool isEmpty(){
@@ -107,14 +111,46 @@ class BinaryNode
             if(temp->right != nullptr) nodeQueue.push(temp->right);
         }
     }
+    int height(BinaryNode* root){
+        
+        if(root != nullptr){
+            int maxHeight = 0;
+            int leftSubTree = 0;
+            int rightSubTree = 0;
+            if(root->left != nullptr) leftSubTree = height(root->left);
+            if(root->right != nullptr) rightSubTree = height(root->right);
 
-    int altura(){
-        return -1;
+            if(leftSubTree > rightSubTree)
+                maxHeight = leftSubTree;
+            else
+                maxHeight = rightSubTree; 
+            return maxHeight + 1;
+        }else{
+            return 0;
+        }
+        
+        
+    }   
+    /*Comienza desde la raíz del árbol.
+Si el nodo actual es nulo, devuelve 0.
+Recursivamente, calcula el tamaño del subárbol izquierdo llamando a la función para el hijo izquierdo.
+Recursivamente, calcula el tamaño del subárbol derecho llamando a la función para el hijo derecho.
+Suma el tamaño de los subárboles izquierdo y derecho, y agrega 1 para contar el nodo actual.
+Devuelve el tamaño total del árbol.*/
+
+    int size(BinaryNode* root){
+        if(root == nullptr)
+            return 0;
+
+        int leftSubTree = size(root->left);
+        int rightSubTree = size(root->right);
+
+        int sum = leftSubTree + rightSubTree + 1 ;
+        return sum;
     }
 
+
     /*
-    int altura();
-    int tamano();
     bool eliminar(T val)
     void nivelOrden();*/
 };
@@ -123,10 +159,11 @@ class BinaryNode
 
 
 int main(){
-    BinaryNode<int>* root;
+    BinaryNode<int>* root = nullptr;
     root->Insert(root, 15);
     root->Insert(root, 20);
     root->Insert(root, 10);
     if(root->search(root, 10)) std::cout<<"Encontro \n";
+    std::cout<<"Altura: " << root->height(root);
     return 0;
 }
