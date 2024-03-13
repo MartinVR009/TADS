@@ -1,6 +1,5 @@
 #include <iostream>
-
-//Un comentario
+#include <queue>
 
 
 template<typename T>
@@ -95,13 +94,22 @@ class BinaryNode
         }
     }
     
-/*El recorrido por niveles en un árbol binario sigue el siguiente algoritmo:
 
-Se comienza por visitar el nodo raíz.
-Luego, se visitan los nodos de cada nivel, de izquierda a derecha, antes de pasar al siguiente nivel.
-Se repite este proceso hasta haber visitado todos los nodos del árbol.*/
     void levelOrderTraversal(BinaryNode* node){
+        std::queue<BinaryNode*> nodeQueue;
+        nodeQueue.push(node);
 
+        while(!nodeQueue.empty()){
+            BinaryNode* temp = nodeQueue.front();
+            nodeQueue.pop();
+            std::cout<<temp->data<< " ";
+            if(temp->left != nullptr) nodeQueue.push(temp->left);
+            if(temp->right != nullptr) nodeQueue.push(temp->right);
+        }
+    }
+
+    int altura(){
+        return -1;
     }
 
     /*

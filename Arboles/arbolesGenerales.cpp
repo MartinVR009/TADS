@@ -214,7 +214,7 @@ class Node{
 
 template <typename T>
 class Tree{
-    struct Node<T>* root = nullptr;
+    Node<T>* root = nullptr;
     bool isEmpty(){return root == nullptr;}
 
     Node<T>* getRoot(){
