@@ -131,12 +131,6 @@ class BinaryNode
         
         
     }   
-    /*Comienza desde la raíz del árbol.
-Si el nodo actual es nulo, devuelve 0.
-Recursivamente, calcula el tamaño del subárbol izquierdo llamando a la función para el hijo izquierdo.
-Recursivamente, calcula el tamaño del subárbol derecho llamando a la función para el hijo derecho.
-Suma el tamaño de los subárboles izquierdo y derecho, y agrega 1 para contar el nodo actual.
-Devuelve el tamaño total del árbol.*/
 
     int size(BinaryNode* root){
         if(root == nullptr)
@@ -150,16 +144,13 @@ Devuelve el tamaño total del árbol.*/
     }
 
 
-    /*
-    bool eliminar(T val)
-    void nivelOrden();*/
+    /*bool eliminar(T val)*/
 };
 
 
-
-
 int main(){
-    BinaryNode<int>* root = nullptr;
+    BinaryNode<int>* root() = new BinaryNode<int>();
+    root = nullptr;
     root->Insert(root, 15);
     root->Insert(root, 20);
     root->Insert(root, 10);
