@@ -243,9 +243,7 @@ class Tree{
     }
 
     /*
-    bool insertarNodo(T padre, T n);
     bool eliminarNodo(T n); 
-
     */
     bool search(T n){
         return root->search(*root,n);

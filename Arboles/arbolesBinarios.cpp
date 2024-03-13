@@ -149,12 +149,12 @@ class BinaryNode
 
 
 int main(){
-    BinaryNode<int>* root() = new BinaryNode<int>();
-    root = nullptr;
+    BinaryNode<int>* root = nullptr;
     root->Insert(root, 15);
     root->Insert(root, 20);
     root->Insert(root, 10);
     if(root->search(root, 10)) std::cout<<"Encontro \n";
     std::cout<<"Altura: " << root->height(root);
+    std::cout<<"Tamanio: " << root->size(root);
     return 0;
 }
