@@ -3,19 +3,19 @@
 
 
 template<typename T>
-class BinaryNode
+class AVLNode
 {
     private:
         T data;
-        BinaryNode* left;
-        BinaryNode* right;
+        AVLNode* left;
+        AVLNode* right;
 
     public:
-    BinaryNode():left(nullptr), right(nullptr) {}
+    AVLNode():left(nullptr), right(nullptr) {}
 
-    BinaryNode(T data): data(data), left(nullptr), right(nullptr) {}
+    AVLNode(T data): data(data), left(nullptr), right(nullptr) {}
 
-    ~BinaryNode(){
+    ~AVLNode(){
         if(left != nullptr){
             delete left;
             left = nullptr;
@@ -31,16 +31,28 @@ class BinaryNode
         else return false;
     }
 
-    BinaryNode* GetNewNode(T data)
+    int max(int a, int b){
+        return (a > b) ? a : b;
+    }
+
+    int balanceFactor(AVLNode* node){
+        if(node == nullptr){
+            return 0;
+        }else{
+            return node->left->height - node->right->height;
+        }
+    }
+
+    AVLNode* GetNewNode(T data)
     {
-        BinaryNode* newNode = new BinaryNode();
+        AVLNode* newNode = new AVLNode();
         newNode->data = data;
         newNode->right = nullptr;
         newNode->left = nullptr;
         return newNode;
     }
 
-    BinaryNode* Insert(BinaryNode*& root, T data){
+    AVLNode* Insert(AVLNode*& root, T data){
         if(root == nullptr){
             root = GetNewNode(data);
         }else if(data < root->data){
@@ -48,12 +60,35 @@ class BinaryNode
         }else if(data > root->data){
             root->right = Insert(root->right, data);
         }else{
-            return NULL;
+            return root;
         }
+        
+        int height = root->height();
+        //Update Height of current node
+
+        //Get balance factor
+        int bf = balanceFactor(root)
+
+        //if BF > 1 
+        if(bf > 1){
+            //LeftRotate(root)
+            //BF < -1
+                    //RightRotate(root->left)
+        }else if(bf < -1){
+
+        }
+        //if BF < -1
+            //RightRotate(root)
+            //if Bf > 1
+                //LeftRotate(root->right)
+
+
+
+
         return root;
     }
 
-    bool search(BinaryNode* root, T data){
+    bool search(AVLNode* root, T data){
         if(root == nullptr) return false;
         if(root-> data == data) return true;
         else if(data < root-> data) return search(root->left, data);
@@ -64,18 +99,18 @@ class BinaryNode
         return this->data;
     }
 
-    BinaryNode* rightChild(){
+    AVLNode* rightChild(){
         return this->right;
     }
 
-    BinaryNode* leftChild(){
+    AVLNode* leftChild(){
         return this->left;
     }
     void changeData(T data){
         this->data = data;
     }
 
-    void preOrder(BinaryNode* node){
+    void preOrder(AVLNode* node){
         if(node != nullptr){
             std::cout<<node->data;
             preOrder(node->left);
@@ -83,14 +118,14 @@ class BinaryNode
         }
     }
 
-    void postOrder(BinaryNode* node){
+    void postOrder(AVLNode* node){
         if(node != nullptr){
             posOrder(node->left);
             posOrder(node->right);
             std::cout<<node->data;
         }
     }
-    void inOrder(BinaryNode* node){
+    void inOrder(AVLNode* node){
         if(node != nullptr){
             inOrder(node->left);
             std::cout<<node->data;
@@ -99,19 +134,19 @@ class BinaryNode
     }
     
 
-    void levelOrderTraversal(BinaryNode* node){
-        std::queue<BinaryNode*> nodeQueue;
+    void levelOrderTraversal(AVLNode* node){
+        std::queue<AVLNode*> nodeQueue;
         nodeQueue.push(node);
 
         while(!nodeQueue.empty()){
-            BinaryNode* temp = nodeQueue.front();
+            AVLNode* temp = nodeQueue.front();
             nodeQueue.pop();
             std::cout<<temp->data<< " ";
             if(temp->left != nullptr) nodeQueue.push(temp->left);
             if(temp->right != nullptr) nodeQueue.push(temp->right);
         }
     }
-    int height(BinaryNode* root){
+    int height(AVLNode* root){
         if(root != nullptr){
             int maxHeight = 0;
             int leftSubTree = 0;
@@ -131,7 +166,7 @@ class BinaryNode
         
     }   
 
-    int size(BinaryNode* root){
+    int size(AVLNode* root){
         if(root == nullptr)
             return 0;
 
@@ -148,7 +183,7 @@ template <typename A>
 class BinaryTree
 {
     private:
-        BinaryNode<int>* root;
+        AVLNode<int>* root;
     
     public:
         BinaryTree(): root(nullptr) {}
@@ -159,7 +194,7 @@ class BinaryTree
 };
 
 int main(){
-    BinaryNode<int>* root = nullptr;
+    AVLNode<int>* root = nullptr;
     root->Insert(root, 15);
     root->Insert(root, 20);
     root->Insert(root, 10);
