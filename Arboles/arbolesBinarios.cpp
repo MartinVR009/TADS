@@ -1,5 +1,5 @@
 #include <iostream>
-
+#include <queue>
 //Un comentario
 
 
@@ -50,6 +50,48 @@ class BinaryNode
         return root;
     }
 
+    BinaryNode* Delete(BinaryNode *root, int data) {
+        // Return if the tree is empty
+        if (root == NULL) return root;
+
+        // Find the node to be deleted
+        if (data < root->data)
+            root->left = Delete(root->left, data);
+        else if (data > root->data)
+            root->right = Delete(root->right, data);
+        else {
+            // If the node is with only one child or no child
+            if (root->left == NULL) {
+                BinaryNode *temp = root->right;
+                free(root);
+                return temp;
+            } else if (root->right == NULL) {
+                BinaryNode *temp = root->left;
+                free(root);
+                return temp;
+            }
+
+            // If the node has two children
+            BinaryNode *temp = minLeftLeaf(root->right);
+
+            // Place the inorder successor in position of the node to be deleted
+            root->data = temp->data;
+
+            // Delete the inorder successor
+            root->right = Delete(root->right, temp->data);
+        }
+        return root;
+        }
+
+    BinaryNode* minLeftLeaf(BinaryNode* node){
+            BinaryNode* current = node;
+
+            while(current->left != nullptr)
+            current = current->left;
+            
+            return current;
+        }
+
     bool search(BinaryNode* root, T data){
         if(root == nullptr) return false;
         if(root-> data == data) return true;
@@ -82,8 +124,8 @@ class BinaryNode
 
     void postOrder(BinaryNode* node){
         if(node != nullptr){
-            posOrder(node->left);
-            posOrder(node->right);
+            postOrder(node->left);
+            postOrder(node->right);
             std::cout<<node->data;
         }
     }
@@ -97,11 +139,11 @@ class BinaryNode
     
 
     void levelOrderTraversal(BinaryNode* node){
-        std::queue<AVLNode*> nodeQueue;
+        std::queue<BinaryNode*> nodeQueue;
         nodeQueue.push(node);
 
         while(!nodeQueue.empty()){
-            AVLNode* temp = nodeQueue.front();
+            BinaryNode* temp = nodeQueue.front();
             nodeQueue.pop();
             std::cout<<temp->data<< " ";
             if(temp->left != nullptr) nodeQueue.push(temp->left);
@@ -136,29 +178,104 @@ class BinaryNode
         int sum = leftSubTree + rightSubTree + 1 ;
         return sum;
     }
-    /*bool eliminar(T val)*/
+
 };
 
 template <typename A>
 class BinaryTree
 {
     private:
-        AVLNode<int>* root;
+        BinaryNode<int>* root;
     
     public:
-        BinaryTree(): root(nullptr) {}
-        BinaryTree(A var): root(GetNewNode(var)) {}
+        BinaryTree(){
+            root = nullptr;
+        }
+        BinaryTree(A var){
+            root->Insert(var);
+        }
+        ~BinaryTree() {
+            deleteTree(root);
+        }
 
-    
+        void deleteTree(BinaryNode<A>* node) {
+            if (node != nullptr) {
+                deleteTree(node->leftChild());
+                deleteTree(node->rightChild());
+                delete node;
+            }
+        }
+
+        bool isEmpty() const {
+            return root == nullptr;
+        }
+
+        int height(){
+            if(root != nullptr){
+                return root->height(root);
+            }
+            return 0;
+        }
+
+        bool Insert(A data){
+            if(root->Insert(root, data) != NULL)
+                return true;
+            return false;
+        }
+
+        bool Delete(A data){
+            if(root != nullptr){
+                if(root->Delete(root, data)!= NULL)
+                    return true;
+            }
+            return false;
+        }
+
+        bool search(A data){
+            if(root != nullptr){
+                if(root->search(root, data) != NULL)
+                    return true;
+            }
+            return false;
+        }
+
+        void preOrder(){
+            if(root != nullptr){
+                root->preOrder(root);
+            }
+        }
+        void postOrder(){
+            if(root != nullptr){
+                root->postOrder(root);
+            }
+        }
+        void inOrder(){
+            if(root != nullptr){
+                root->inOrder(root);
+            }
+        }
+        void levelOrderTraversal(){
+            if(root != nullptr){
+                root->levelOrderTraversal(root);
+            }
+        }
+        int size(){
+            if(root != nullptr){
+                return root->size(root);
+            }
+            return 0;
+        }
+
 };
 
 
 
 int main(){
-    BinaryNode<int>* root;
-    root->Insert(root, 15);
-    root->Insert(root, 20);
-    root->Insert(root, 10);
-    if(root->search(root, 10)) std::cout<<"Encontro \n";
+    BinaryTree<int> root;
+    root.Insert(10);
+    root.Insert(15);
+    root.Insert(20);
+    root.postOrder();
+    root.Delete(20);
     return 0;
 }

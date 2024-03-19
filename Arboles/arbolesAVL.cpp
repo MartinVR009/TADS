@@ -40,7 +40,7 @@ class AVLNode
         if(node == nullptr){
             return 0;
         }else{
-            return node->left->height() - node->right->height();
+            return node->left->height - node->right->height;
         }
     }
 
@@ -54,47 +54,72 @@ class AVLNode
         return newNode;
     }
 
-    AVLNode* Insert(AVLNode*& root, T data){
-        if(root == nullptr){
-            root = GetNewNode(data);
-        }else if(data < root->data){
-            root->left = Insert(root->left, data);
-        }else if(data > root->data){
-            root->right = Insert(root->right, data);
+    int heightTree(AVLNode* root){
+        if(root != nullptr){
+            int maxHeight = 0;
+            int leftSubTree = 0;
+            int rightSubTree = 0;
+            if(root->left != nullptr) leftSubTree = heightTree(root->left);
+            if(root->right != nullptr) rightSubTree = heightTree(root->right);
+
+            if(leftSubTree > rightSubTree)
+                maxHeight = leftSubTree;
+            else
+                maxHeight = rightSubTree; 
+                
+            return maxHeight + 1;
+
         }else{
-            return root;
+            return 0;
+        }
+        
+    } 
+
+
+    AVLNode* Insert(AVLNode*& root, T data) {
+        if (root == nullptr) {
+            root = GetNewNode(data);
+        } else if (data < root->data) {
+            root->left = Insert(root->left, data);
+        } else if (data > root->data) {
+            root->right = Insert(root->right, data);
+        }else {
+            return nullptr;
         }
 
-        //Update Height of current node        
-        root->height = root->height() + 1;
+        /*
+        // Actualizar la altura del nodo actual
+        if (root != nullptr) {
+            root->height = 1 + max(heightTree(root->left), heightTree(root->right));
+        }
+        */
+        // Obtener el factor de equilibrio
+        int balanceFRoot = balanceFactor(root);
 
-        //Get balance factor
-        int balanceFRoot = balanceFactor(root)
-
+        // Rebalancear el árbol si es necesario
         if(balanceFRoot > 1 ){
             if (data < root->left->data) {
-                return rightRotate(root);
+                root= rightRotate(root);
             }else if (data > root->left->data){
                 root->left = leftRotate(root->left);
-                return rightRotate(root);
+                root = rightRotate(root);
             }
         }else if(balanceFRoot < -1){
             if (data > root->right->data){
-                return leftRotate(root);
+                root = leftRotate(root);
             }else if (data < root->right->data){
                 root->right = rightRotate(root->right);
-                return leftRotate(root);
+                root = leftRotate(root);
             }
         }
+        
         return root;
     }
+
     AVLNode* Delete(AVLNode*& root, T data){
 
-        //Gets to leaf and the data wasn't found
-
-        
         if (root == nullptr) 
-            return root; 
+            return NULL; 
 
         //Search of data
         if ( data < root->data ) 
@@ -120,14 +145,8 @@ class AVLNode
 
         root->height = 1 +  max(root->left->height, root->right->height);
         //Get balance factor
-        BalanceTree(root);
-
-        return root;
-    }
-
-    void BalanceTree(AVLNode*& root){
-
         int balanceFRoot = balanceFactor(root);
+        /*
         if(balanceFRoot > 1 ){
             if (data < root->left->data) {
                 return rightRotate(root);
@@ -143,7 +162,11 @@ class AVLNode
                 return leftRotate(root);
             }
         }
+        */
+
+        return root;
     }
+
 
     AVLNode* minLeftLeaf(AVLNode* node){
         AVLNode* current = node;
@@ -155,30 +178,34 @@ class AVLNode
     }
 
     AVLNode* rightRotate(AVLNode* node){
+        if(node != nullptr){
+            AVLNode* N1 = node->left;
+            AVLNode* T2 = N1->right;
 
-        AVLNode* N1 = node->left;
-        AVLNode* T2 = N1->right;
+            N1->right = node;
+            node->left = T2;
+            
+            node->height = max(heightTree(node->left), heightTree(node->right)) + 1;  
+            N1->height = max(heightTree(N1->left), heightTree(N1->right)) + 1;
 
-        N1->right = node;
-        node->left = T2;
-        
-        node->height = max(height(node->left), height(node->right)) + 1;  
-        N1->height = max(height(N1->left), height(N1->right)) + 1;
-
-        return N1;    
+            return N1; 
+        }
+        return node;   
     }
     AVLNode* leftRotate(AVLNode* node){
+        if(node != nullptr){
+            AVLNode* N2 = node->right;
+            AVLNode* T2 = node->left;
 
-        AVLNode* N2 = node->right;
-        AVLNode* T2 = node->left;
+            N2->left = node;
+            node->right = T2;
 
-        N2->left = node;
-        node->right = T2;
+            N2->height = max(heightTree(N2->left), heightTree(N2->right)) + 1;
+            node->height = max(heightTree(node->left), heightTree(node->right)) + 1;  
 
-        N2->height = max(height(N2->left), height(N2->right)) + 1;
-        node->height = max(height(node->left), height(node->right)) + 1;  
-
-        return N2;
+            return N2;
+        }
+        return node;
     }
 
     AVLNode* search(AVLNode* root, T data){
@@ -213,8 +240,8 @@ class AVLNode
 
     void postOrder(AVLNode* node){
         if(node != nullptr){
-            posOrder(node->left);
-            posOrder(node->right);
+            postOrder(node->left);
+            postOrder(node->right);
             std::cout<<node->data;
         }
     }
@@ -239,25 +266,7 @@ class AVLNode
             if(temp->right != nullptr) nodeQueue.push(temp->right);
         }
     }
-    int height(AVLNode* root){
-        if(root != nullptr){
-            int maxHeight = 0;
-            int leftSubTree = 0;
-            int rightSubTree = 0;
-            if(root->left != nullptr) leftSubTree = height(root->left);
-            if(root->right != nullptr) rightSubTree = height(root->right);
-
-            if(leftSubTree > rightSubTree)
-                maxHeight = leftSubTree;
-            else
-                maxHeight = rightSubTree; 
-            return maxHeight + 1;
-        }else{
-            return 0;
-        }
-        
-        
-    }   
+      
 
     int size(AVLNode* root){
         if(root == nullptr)
@@ -273,18 +282,98 @@ class AVLNode
 };
 
 template <typename A>
-class AVLTree
-{
+class AVLTree {
     private:
-        AVLNode<int>* root;
-    
-    public:
-        AVLTreeTree(): root(nullptr) {}
-        AVLTree(A var): root(GetNewNode(var)) {}
+        AVLNode<A>* root;
 
+    public:
+        // Constructor predeterminado
+        AVLTree() {
+            root = nullptr;
+        }
+
+        // Constructor con un solo argumento para inicializar con un valor
+        AVLTree(A var) {
+            root->Insert(var);
+        }
+
+        // Destructor para liberar la memoria asignada a los nodos AVL
+        ~AVLTree() {
+            deleteTree(root);
+        }
+
+        void deleteTree(AVLNode<A>* node) {
+            if (node != nullptr) {
+                deleteTree(node->leftChild());
+                deleteTree(node->rightChild());
+                delete node;
+            }
+        }
+
+        // Verificar si el árbol está vacío
+        bool isEmpty() const {
+            return root == nullptr;
+        }
+
+        int height(){
+            if(root != nullptr){
+                return root->heightTree();
+            }
+            return 0;
+        }
+
+        bool Insert(A data){
+            if(root->Insert(root, data) != nullptr)
+                return true;
+            return false;
+        }
+
+        bool Delete(A data){
+            if(root != nullptr){
+                if(root->Delete(root, data)!= NULL)
+                    return true;
+            }
+            return false;
+        }
+
+        bool search(A data){
+            if(root != nullptr){
+                if(root->search(root, data) != NULL)
+                    return true;
+            }
+            return false;
+        }
+
+        void preOrder(){
+            if(root != nullptr){
+                root->preOrder(root);
+            }
+        }
+        void postOrder(){
+            if(root != nullptr){
+                root->postOrder(root);
+            }
+        }
+        void inOrder(){
+            if(root != nullptr){
+                root->inOrder(root);
+            }
+        }
+        void levelOrderTraversal(){
+            if(root != nullptr){
+                root->levelOrderTraversal(root);
+            }
+        }
+        int size(){
+            if(root != nullptr){
+                return root->size(root);
+            }
+            return 0;
+        }
 };
 
 int main(){
-    
+    AVLTree<int> myTree;
+    myTree.Insert(16);
     return 0;
 }
