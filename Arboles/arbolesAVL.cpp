@@ -77,9 +77,9 @@ class AVLNode
             if(balanceFactor(root->right) < -1)
                 root->right = rightRotate(root->right);
         }else if(balanceFRoot < -1){
-            root = rightRotate(root)
+            root = rightRotate(root);
             if(balanceFactor(root->left))
-                root->left = leftRotate(root->left)
+                root->left = leftRotate(root->left);
         }
 
         return root;
@@ -213,17 +213,9 @@ class BinaryTree
         BinaryTree(): root(nullptr) {}
         BinaryTree(A var): root(GetNewNode(var)) {}
 
-        
-
 };
 
 int main(){
-    AVLNode<int>* root = nullptr;
-    root->Insert(root, 15);
-    root->Insert(root, 20);
-    root->Insert(root, 10);
-    if(root->search(root, 10)) std::cout<<"Encontro \n";
-    std::cout<<"Altura: " << root->height(root);
-    std::cout<<"Tamanio: " << root->size(root);
+    
     return 0;
 }
