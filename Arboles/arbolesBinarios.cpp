@@ -1,5 +1,6 @@
 #include <iostream>
-#include <queue>
+
+//Un comentario
 
 
 template<typename T>
@@ -11,19 +12,15 @@ class BinaryNode
         BinaryNode* right;
 
     public:
-    BinaryNode():left(nullptr), right(nullptr) {}
+    BinaryNode(){
+        this->left = nullptr;
+        this->right = nullptr;
+    }
 
-    BinaryNode(T data): data(data), left(nullptr), right(nullptr) {}
-
-    ~BinaryNode(){
-        if(left != nullptr){
-            delete left;
-            left = nullptr;
-        }
-        if(right != nullptr){
-            delete right;
-            right = nullptr;
-        }
+    BinaryNode(T data){
+        this->left = nullptr;
+        this->right = nullptr;
+        this->data = data;
     }
 
     bool isEmpty(){
@@ -99,72 +96,41 @@ class BinaryNode
     }
     
 
+/*Claro, aquí tienes el algoritmo para el recorrido por niveles en un árbol binario:
+
+Comienza en la raíz del árbol.
+Crea una cola (queue) vacía.
+Inserta el nodo raíz en la cola.
+Mientras la cola no esté vacía:
+Extrae un nodo de la cola.
+Imprime el valor del nodo extraído.
+Si el nodo tiene un hijo izquierdo, agrégalo a la cola.
+Si el nodo tiene un hijo derecho, agrégalo a la cola.
+Repite el paso 4 hasta que la cola esté vacía.*/
+
     void levelOrderTraversal(BinaryNode* node){
-        std::queue<BinaryNode*> nodeQueue;
-        nodeQueue.push(node);
+        if(node == nullptr)
+            return;
 
-        while(!nodeQueue.empty()){
-            BinaryNode* temp = nodeQueue.front();
-            nodeQueue.pop();
-            std::cout<<temp->data<< " ";
-            if(temp->left != nullptr) nodeQueue.push(temp->left);
-            if(temp->right != nullptr) nodeQueue.push(temp->right);
-        }
+        std::queue<    
+
     }
-    int height(BinaryNode* root){
-        if(root != nullptr){
-            int maxHeight = 0;
-            int leftSubTree = 0;
-            int rightSubTree = 0;
-            if(root->left != nullptr) leftSubTree = height(root->left);
-            if(root->right != nullptr) rightSubTree = height(root->right);
 
-            if(leftSubTree > rightSubTree)
-                maxHeight = leftSubTree;
-            else
-                maxHeight = rightSubTree; 
-            return maxHeight + 1;
-        }else{
-            return 0;
-        }
-        
-        
-    }   
-
-    int size(BinaryNode* root){
-        if(root == nullptr)
-            return 0;
-
-        int leftSubTree = size(root->left);
-        int rightSubTree = size(root->right);
-
-        int sum = leftSubTree + rightSubTree + 1 ;
-        return sum;
-    }
-    /*bool eliminar(T val)*/
+    /*
+    int altura();
+    int tamano();
+    bool eliminar(T val)
+    void nivelOrden();*/
 };
 
-template <typename A>
-class BinaryTree
-{
-    private:
-        BinaryNode<int>* root;
-    
-    public:
-        BinaryTree(): root(nullptr) {}
-        BinaryTree(A var): root(GetNewNode(var)) {}
 
-        
 
-};
 
 int main(){
-    BinaryNode<int>* root = nullptr;
+    BinaryNode<int>* root;
     root->Insert(root, 15);
     root->Insert(root, 20);
     root->Insert(root, 10);
     if(root->search(root, 10)) std::cout<<"Encontro \n";
-    std::cout<<"Altura: " << root->height(root);
-    std::cout<<"Tamanio: " << root->size(root);
     return 0;
 }
