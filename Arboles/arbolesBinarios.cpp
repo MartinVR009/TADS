@@ -63,21 +63,19 @@ class BinaryNode
             // If the node is with only one child or no child
             if (root->left == NULL) {
                 BinaryNode *temp = root->right;
-                free(root);
+                delete root;
                 return temp;
             } else if (root->right == NULL) {
                 BinaryNode *temp = root->left;
-                free(root);
+                delete root;
                 return temp;
             }
 
             // If the node has two children
             BinaryNode *temp = minLeftLeaf(root->right);
 
-            // Place the inorder successor in position of the node to be deleted
             root->data = temp->data;
 
-            // Delete the inorder successor
             root->right = Delete(root->right, temp->data);
             }   
             return root;

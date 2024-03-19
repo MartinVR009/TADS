@@ -89,17 +89,17 @@ class AVLNode
                 // If the node is with only one child or no child
                 if (root->left == NULL) {
                     AVLNode *temp = root->right;
-                    free(root);
+                    delete root;
                     return temp;
                 } else if (root->right == NULL) {
                     AVLNode *temp = root->left;
-                    free(root);
+                    delete root;
                     return temp;
                 }
 
-                AVLNode *temp = minLeftLeaf(root->right);
-                root->data = temp->data;
-                root->right = Delete(root->right, temp->data);
+                    AVLNode *temp = minLeftLeaf(root->right);
+                    root->data = temp->data;
+                    root->right = Delete(root->right, temp->data);
                 }   
 
                 root->height = 1 + max(heightTree(root->left), heightTree(root->right));
