@@ -79,8 +79,8 @@ class BinaryNode
 
             // Delete the inorder successor
             root->right = Delete(root->right, temp->data);
-        }
-        return root;
+            }   
+            return root;
         }
 
     BinaryNode* minLeftLeaf(BinaryNode* node){
@@ -185,7 +185,7 @@ template <typename A>
 class BinaryTree
 {
     private:
-        BinaryNode<int>* root;
+        BinaryNode<A>* root;
     
     public:
         BinaryTree(){
@@ -277,5 +277,6 @@ int main(){
     root.Insert(20);
     root.postOrder();
     root.Delete(20);
+    root.postOrder();
     return 0;
 }

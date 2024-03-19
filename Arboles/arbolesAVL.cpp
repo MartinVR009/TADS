@@ -12,9 +12,17 @@ class AVLNode
         int height;
 
     public:
-    AVLNode():left(nullptr), right(nullptr), height(0) {}
-
-    AVLNode(T data): data(data), left(nullptr), right(nullptr), height(0) {}
+    AVLNode(){
+        this->left = nullptr;
+        this->right = nullptr;
+        this->height = 0;
+    }
+    AVLNode(T data){
+        this->left = nullptr;
+        this->right = nullptr;
+        this->height = 0;
+        this->data = data;
+    } 
 
     ~AVLNode(){
         if(left != nullptr){
@@ -40,7 +48,7 @@ class AVLNode
         if(node == nullptr){
             return 0;
         }else{
-            return node->left->height - node->right->height;
+            return heightTree(node->left) - heightTree(node->right);
         }
     }
 
@@ -59,112 +67,64 @@ class AVLNode
             int maxHeight = 0;
             int leftSubTree = 0;
             int rightSubTree = 0;
-            if(root->left != nullptr) leftSubTree = heightTree(root->left);
-            if(root->right != nullptr) rightSubTree = heightTree(root->right);
+            if(root->left != nullptr) leftSubTree = height(root->left);
+            if(root->right != nullptr) rightSubTree = height(root->right);
 
             if(leftSubTree > rightSubTree)
                 maxHeight = leftSubTree;
             else
                 maxHeight = rightSubTree; 
-                
             return maxHeight + 1;
-
         }else{
             return 0;
-        }
+        } 
         
     } 
 
 
     AVLNode* Insert(AVLNode*& root, T data) {
-        if (root == nullptr) {
+       if(root == nullptr){
             root = GetNewNode(data);
-        } else if (data < root->data) {
+        }else if(data < root->data){
             root->left = Insert(root->left, data);
-        } else if (data > root->data) {
+        }else if(data > root->data){
             root->right = Insert(root->right, data);
-        }else {
-            return nullptr;
+        }else{
+            return NULL;
         }
-
-        /*
-        // Actualizar la altura del nodo actual
-        if (root != nullptr) {
-            root->height = 1 + max(heightTree(root->left), heightTree(root->right));
-        }
-        */
-        // Obtener el factor de equilibrio
-        int balanceFRoot = balanceFactor(root);
-
-        // Rebalancear el árbol si es necesario
-        if(balanceFRoot > 1 ){
-            if (data < root->left->data) {
-                root= rightRotate(root);
-            }else if (data > root->left->data){
-                root->left = leftRotate(root->left);
-                root = rightRotate(root);
-            }
-        }else if(balanceFRoot < -1){
-            if (data > root->right->data){
-                root = leftRotate(root);
-            }else if (data < root->right->data){
-                root->right = rightRotate(root->right);
-                root = leftRotate(root);
-            }
-        }
-        
         return root;
     }
 
     AVLNode* Delete(AVLNode*& root, T data){
+        if (root == NULL) 
+            return root;
 
-        if (root == nullptr) 
-            return NULL; 
-
-        //Search of data
-        if ( data < root->data ) 
-            root->left = Delete(root->left, data); 
-        else if( data > root->data ) 
-            root->right = Delete(root->right, data); 
-        else{ //If found data
-            //Case 2 and 1, 1 Child or no child
-            if (root->left == nullptr) {
+        if (data < root->data)
+            root->left = Delete(root->left, data);
+        else if (data > root->data)
+            root->right = Delete(root->right, data);
+        else {
+            // If the node is with only one child or no child
+            if (root->left == NULL) {
                 AVLNode *temp = root->right;
                 free(root);
                 return temp;
-            }else if(root->right == nullptr) {
+            } else if (root->right == NULL) {
                 AVLNode *temp = root->left;
                 free(root);
                 return temp;
             }
-            //Case 3, 2 Childs
+
+            // If the node has two children
             AVLNode *temp = minLeftLeaf(root->right);
+
+            // Place the inorder successor in position of the node to be deleted
             root->data = temp->data;
+
+            // Delete the inorder successor
             root->right = Delete(root->right, temp->data);
-        }
-
-        root->height = 1 +  max(root->left->height, root->right->height);
-        //Get balance factor
-        int balanceFRoot = balanceFactor(root);
-        /*
-        if(balanceFRoot > 1 ){
-            if (data < root->left->data) {
-                return rightRotate(root);
-            }else if (data > root->left->data){
-                root->left = leftRotate(root->left);
-                return rightRotate(root);
-            }
-        }else if(balanceFRoot < -1){
-            if (data > root->right->data){
-                return leftRotate(root);
-            }else if (data < root->right->data){
-                root->right = rightRotate(root->right);
-                return leftRotate(root);
-            }
-        }
-        */
-
-        return root;
+            }   
+            return root;
     }
 
 
@@ -317,13 +277,13 @@ class AVLTree {
 
         int height(){
             if(root != nullptr){
-                return root->heightTree();
+                return root->heightTree(root);
             }
             return 0;
         }
 
         bool Insert(A data){
-            if(root->Insert(root, data) != nullptr)
+            if(root->Insert(root, data) != NULL)
                 return true;
             return false;
         }
@@ -375,5 +335,8 @@ class AVLTree {
 int main(){
     AVLTree<int> myTree;
     myTree.Insert(16);
+    myTree.Insert(15);
+    //myTree.Insert(20);
+    //myTree.levelOrderTraversal();
     return 0;
 }
