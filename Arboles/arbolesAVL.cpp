@@ -66,23 +66,92 @@ class AVLNode
         }
 
         //Update Height of current node        
-         root->height = root->height() + 1;
+        root->height = root->height() + 1;
 
         //Get balance factor
         int balanceFRoot = balanceFactor(root)
 
-        //if BF > 1 
-        if(balanceFRoot > 1){
-            root = leftRotate(root);
-            if(balanceFactor(root->right) < -1)
-                root->right = rightRotate(root->right);
-        }else if(balanceFRoot < -1){
-            root = rightRotate(root);
-            if(balanceFactor(root->left))
+        if(balanceFRoot > 1 ){
+            if (data < root->left->data) {
+                return rightRotate(root);
+            }else if (data > root->left->data){
                 root->left = leftRotate(root->left);
+                return rightRotate(root);
+            }
+        }else if(balanceFRoot < -1){
+            if (data > root->right->data){
+                return leftRotate(root);
+            }else if (data < root->right->data){
+                root->right = rightRotate(root->right);
+                return leftRotate(root);
+            }
+        }
+        return root;
+    }
+    AVLNode* Delete(AVLNode*& root, T data){
+
+        //Gets to leaf and the data wasn't found
+
+        
+        if (root == nullptr) 
+            return root; 
+
+        //Search of data
+        if ( data < root->data ) 
+            root->left = Delete(root->left, data); 
+        else if( data > root->data ) 
+            root->right = Delete(root->right, data); 
+        else{ //If found data
+            //Case 2 and 1, 1 Child or no child
+            if (root->left == nullptr) {
+                AVLNode *temp = root->right;
+                free(root);
+                return temp;
+            }else if(root->right == nullptr) {
+                AVLNode *temp = root->left;
+                free(root);
+                return temp;
+            }
+            //Case 3, 2 Childs
+            AVLNode *temp = minLeftLeaf(root->right);
+            root->data = temp->data;
+            root->right = Delete(root->right, temp->data);
         }
 
+        root->height = 1 +  max(root->left->height, root->right->height);
+        //Get balance factor
+        BalanceTree(root);
+
         return root;
+    }
+
+    void BalanceTree(AVLNode*& root){
+
+        int balanceFRoot = balanceFactor(root);
+        if(balanceFRoot > 1 ){
+            if (data < root->left->data) {
+                return rightRotate(root);
+            }else if (data > root->left->data){
+                root->left = leftRotate(root->left);
+                return rightRotate(root);
+            }
+        }else if(balanceFRoot < -1){
+            if (data > root->right->data){
+                return leftRotate(root);
+            }else if (data < root->right->data){
+                root->right = rightRotate(root->right);
+                return leftRotate(root);
+            }
+        }
+    }
+
+    AVLNode* minLeftLeaf(AVLNode* node){
+        AVLNode* current = node;
+
+        while(current->left != nullptr)
+           current = current->left;
+        
+        return current;
     }
 
     AVLNode* rightRotate(AVLNode* node){
@@ -112,9 +181,9 @@ class AVLNode
         return N2;
     }
 
-    bool search(AVLNode* root, T data){
-        if(root == nullptr) return false;
-        if(root-> data == data) return true;
+    AVLNode* search(AVLNode* root, T data){
+        if(root == nullptr) return NULL;
+        if(root-> data == data) return root;
         else if(data < root-> data) return search(root->left, data);
         else return search(root->right, data);
     }
@@ -200,18 +269,18 @@ class AVLNode
         int sum = leftSubTree + rightSubTree + 1 ;
         return sum;
     }
-    /*bool eliminar(T val)*/
+    
 };
 
 template <typename A>
-class BinaryTree
+class AVLTree
 {
     private:
         AVLNode<int>* root;
     
     public:
-        BinaryTree(): root(nullptr) {}
-        BinaryTree(A var): root(GetNewNode(var)) {}
+        AVLTreeTree(): root(nullptr) {}
+        AVLTree(A var): root(GetNewNode(var)) {}
 
 };
 
