@@ -132,7 +132,7 @@ class BinaryNode
     void inOrder(BinaryNode* node){
         if(node != nullptr){
             inOrder(node->left);
-            std::cout<<node->data;
+            std::cout<<node->data<<" ";
             inOrder(node->right);
         }
     }
@@ -272,11 +272,16 @@ class BinaryTree
 
 int main(){
     BinaryTree<int> root;
-    root.Insert(10);
-    root.Insert(15);
+    root.Insert(50);
+    root.Insert(30);
     root.Insert(20);
-    root.postOrder();
-    root.Delete(20);
-    root.postOrder();
+    root.Insert(40);
+    root.Insert(70);
+    root.Insert(60);
+    root.Insert(80);
+    root.levelOrderTraversal();
+    root.Delete(50);
+    std::cout<<"\n";
+    root.levelOrderTraversal();
     return 0;
 }
