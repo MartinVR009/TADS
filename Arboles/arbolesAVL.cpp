@@ -9,11 +9,12 @@ class AVLNode
         T data;
         AVLNode* left;
         AVLNode* right;
+        int height;
 
     public:
-    AVLNode():left(nullptr), right(nullptr) {}
+    AVLNode():left(nullptr), right(nullptr), height(0) {}
 
-    AVLNode(T data): data(data), left(nullptr), right(nullptr) {}
+    AVLNode(T data): data(data), left(nullptr), right(nullptr), height(0) {}
 
     ~AVLNode(){
         if(left != nullptr){
@@ -39,7 +40,7 @@ class AVLNode
         if(node == nullptr){
             return 0;
         }else{
-            return node->left->height - node->right->height;
+            return node->left->height() - node->right->height();
         }
     }
 
@@ -47,6 +48,7 @@ class AVLNode
     {
         AVLNode* newNode = new AVLNode();
         newNode->data = data;
+        newNode->height = 0;
         newNode->right = nullptr;
         newNode->left = nullptr;
         return newNode;
@@ -62,30 +64,52 @@ class AVLNode
         }else{
             return root;
         }
-        
-        int height = root->height();
-        //Update Height of current node
+
+        //Update Height of current node        
+         root->height = root->height() + 1;
 
         //Get balance factor
-        int bf = balanceFactor(root)
+        int balanceFRoot = balanceFactor(root)
 
         //if BF > 1 
-        if(bf > 1){
-            //LeftRotate(root)
-            //BF < -1
-                    //RightRotate(root->left)
-        }else if(bf < -1){
-
+        if(balanceFRoot > 1){
+            root = leftRotate(root);
+            if(balanceFactor(root->right) < -1)
+                root->right = rightRotate(root->right);
+        }else if(balanceFRoot < -1){
+            root = rightRotate(root)
+            if(balanceFactor(root->left))
+                root->left = leftRotate(root->left)
         }
-        //if BF < -1
-            //RightRotate(root)
-            //if Bf > 1
-                //LeftRotate(root->right)
-
-
-
 
         return root;
+    }
+
+    AVLNode* rightRotate(AVLNode* node){
+
+        AVLNode* N1 = node->left;
+        AVLNode* T2 = N1->right;
+
+        N1->right = node;
+        node->left = T2;
+        
+        node->height = max(height(node->left), height(node->right)) + 1;  
+        N1->height = max(height(N1->left), height(N1->right)) + 1;
+
+        return N1;    
+    }
+    AVLNode* leftRotate(AVLNode* node){
+
+        AVLNode* N2 = node->right;
+        AVLNode* T2 = node->left;
+
+        N2->left = node;
+        node->right = T2;
+
+        N2->height = max(height(N2->left), height(N2->right)) + 1;
+        node->height = max(height(node->left), height(node->right)) + 1;  
+
+        return N2;
     }
 
     bool search(AVLNode* root, T data){

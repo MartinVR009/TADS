@@ -149,8 +149,7 @@ class BinaryTree
         BinaryTree(): root(nullptr) {}
         BinaryTree(A var): root(GetNewNode(var)) {}
 
-        
-
+    
 };
 
 
