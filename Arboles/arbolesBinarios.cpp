@@ -96,33 +96,62 @@ class BinaryNode
     }
     
 
-/*Claro, aquí tienes el algoritmo para el recorrido por niveles en un árbol binario:
-
-Comienza en la raíz del árbol.
-Crea una cola (queue) vacía.
-Inserta el nodo raíz en la cola.
-Mientras la cola no esté vacía:
-Extrae un nodo de la cola.
-Imprime el valor del nodo extraído.
-Si el nodo tiene un hijo izquierdo, agrégalo a la cola.
-Si el nodo tiene un hijo derecho, agrégalo a la cola.
-Repite el paso 4 hasta que la cola esté vacía.*/
-
     void levelOrderTraversal(BinaryNode* node){
-        if(node == nullptr)
-            return;
+        std::queue<AVLNode*> nodeQueue;
+        nodeQueue.push(node);
 
-        std::queue<    
-
+        while(!nodeQueue.empty()){
+            AVLNode* temp = nodeQueue.front();
+            nodeQueue.pop();
+            std::cout<<temp->data<< " ";
+            if(temp->left != nullptr) nodeQueue.push(temp->left);
+            if(temp->right != nullptr) nodeQueue.push(temp->right);
+        }
     }
+    int height(BinaryNode* root){
+        if(root != nullptr){
+            int maxHeight = 0;
+            int leftSubTree = 0;
+            int rightSubTree = 0;
+            if(root->left != nullptr) leftSubTree = height(root->left);
+            if(root->right != nullptr) rightSubTree = height(root->right);
 
-    /*
-    int altura();
-    int tamano();
-    bool eliminar(T val)
-    void nivelOrden();*/
+            if(leftSubTree > rightSubTree)
+                maxHeight = leftSubTree;
+            else
+                maxHeight = rightSubTree; 
+            return maxHeight + 1;
+        }else{
+            return 0;
+        }  
+    }   
+
+    int size(BinaryNode* root){
+        if(root == nullptr)
+            return 0;
+
+        int leftSubTree = size(root->left);
+        int rightSubTree = size(root->right);
+
+        int sum = leftSubTree + rightSubTree + 1 ;
+        return sum;
+    }
+    /*bool eliminar(T val)*/
 };
 
+template <typename A>
+class BinaryTree
+{
+    private:
+        AVLNode<int>* root;
+    
+    public:
+        BinaryTree(): root(nullptr) {}
+        BinaryTree(A var): root(GetNewNode(var)) {}
+
+        
+
+};
 
 
 
