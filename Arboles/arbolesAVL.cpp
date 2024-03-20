@@ -232,7 +232,7 @@ class AVLNode
             return sum;
         }
 
-        //Funciones Adicionales AVL
+        //AVL Additional Functions
 
         int balanceFactor(AVLNode* node){
             if(node == nullptr){
