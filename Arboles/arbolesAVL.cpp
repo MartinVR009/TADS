@@ -9,20 +9,17 @@ class AVLNode
         T data;
         AVLNode* left;
         AVLNode* right;
-        int height;
 
     public:
         AVLNode(){
             this->left = nullptr;
             this->right = nullptr;
-            this->height = 0;
         }
 
         AVLNode(T data){
             this->left = nullptr;
             this->right = nullptr;
             this->data = data;
-            this->height = 0;
         }
 
         bool isEmpty(){
@@ -44,37 +41,43 @@ class AVLNode
         }
 
         AVLNode* Insert(AVLNode*& root, T data){
-            if(root == nullptr){
+
+            if(search(root, data)){
+                return NULL;
+            }
+
+            if(root == nullptr && !search(root, data)){
                 root = GetNewNode(data);
             }else if(data < root->data){
                 root->left = Insert(root->left, data);
             }else if(data > root->data){
                 root->right = Insert(root->right, data);
             }else{
-                return NULL;
+                return root;
             }
 
-            root->height = 1 + max(heightTree(root->left), heightTree(root->right));
+            int balance = Balance(root); 
             
-            int balanceFRoot = balanceFactor(root);
+            if (balance > 1 && data < root -> left -> data)
+                  return rightRotate(root);
 
-            if(balanceFRoot > 1 ){
-                if (data < root->left->data) {
-                    root= rightRotate(root);
-                }else if (data > root->left->data){
-                    root->left = leftRotate(root->left);
-                    root = rightRotate(root);
-                }
-            }else if(balanceFRoot < -1){
-                if (data > root->right->data){
-                    root = leftRotate(root);
-                }else if (data < root->right->data){
-                    root->right = rightRotate(root->right);
-                    root = leftRotate(root);
-                }
-            }
+                      // Right Right Case  
+                          if (balance  < -1 && data > root -> right -> data)
+                                return leftRotate(root);
 
-            return root;
+            // Left Right Case  
+                if (balance > 1 && data > root -> left -> data) {
+                      root-> left = leftRotate(root -> left);
+                            return rightRotate(root);
+                }
+
+              // Right Left Case  
+                if (balance < -1 && data< root-> right -> data) {
+                    root-> right = rightRotate(root -> right);
+                    return leftRotate(root);
+                }
+
+            return root; 
         }
 
         AVLNode* Delete(AVLNode *root, int data) {
@@ -86,12 +89,16 @@ class AVLNode
             else if (data > root->data)
                 root->right = Delete(root->right, data);
             else {
+                if(root->left==nullptr && root ->right ==nullptr ){
+                    delete root;
+                    root = nullptr;
+                }
                 // If the node is with only one child or no child
-                if (root->left == NULL) {
+                if (root->left == nullptr) {
                     AVLNode *temp = root->right;
                     delete root;
                     return temp;
-                } else if (root->right == NULL) {
+                } else if (root->right == nullptr) {
                     AVLNode *temp = root->left;
                     delete root;
                     return temp;
@@ -101,27 +108,30 @@ class AVLNode
                     root->data = temp->data;
                     root->right = Delete(root->right, temp->data);
                 }   
-
-                root->height = 1 + max(heightTree(root->left), heightTree(root->right));
             
-            int balanceFRoot = balanceFactor(root);
+            int balanceFRoot = balance(root);
 
-             if (balanceFRoot > 1) {
-                if (balanceFactor(root->left) >= 0) {
-                    return rightRotate(root);
-                } else {
-                    root->left = leftRotate(root->left);
-                    return rightRotate(root);
-                }
-            }
-            if (balanceFRoot < -1) {
-                if (balanceFactor(root->right) <= 0) {
-                    return leftRotate(root);
-                } else {
-                    root->right = rightRotate(root->right);
-                    return leftRotate(root);
-                }
-            }
+            // Left Left Case 
+            if (balanceFRoot > 1 && balance(root->left) >= 0) 
+                return rightRotate(root); 
+            
+                // Left Right Case 
+            if (balanceFRoot > 1 && balance(root->left) < 0) 
+            { 
+                root->left = leftRotate(root->left); 
+                return rightRotate(root); 
+            } 
+            
+                // Right Right Case 
+            if (balanceFRoot < -1 && balance(root->right) <= 0) 
+                return leftRotate(root); 
+            
+                // Right Left Case 
+            if (balanceFRoot < -1 && balance(root->right) > 0) 
+            { 
+                root->right = rightRotate(root->right); 
+                return leftRotate(root); 
+            } 
             return root;
         }
 
@@ -136,7 +146,10 @@ class AVLNode
 
         bool search(AVLNode* root, T data){
             if(root == nullptr) return false;
-            if(root-> data == data) return true;
+            if(root-> data == data) {
+                std::cout<<" \n El numero " << data << "Ya estaba en la lista! \n";
+                return true;
+            }
             else if(data < root-> data) return search(root->left, data);
             else return search(root->right, data);
         }
@@ -234,7 +247,7 @@ class AVLNode
 
         //AVL Additional Functions
 
-        int balanceFactor(AVLNode* node){
+        int Balance(AVLNode* node){
             if(node == nullptr){
                 return 0;
             }else{
@@ -249,28 +262,18 @@ class AVLNode
 
                 N1->right = node;
                 node->left = T2;
-                
-                node->height = max(heightTree(node->left), heightTree(node->right)) + 1;  
-                N1->height = max(heightTree(N1->left), heightTree(N1->right)) + 1;
 
                 return N1; 
-            
-            return node;   
         }
         AVLNode* leftRotate(AVLNode* node){
             
                 AVLNode* N2 = node->right;
-                AVLNode* T2 = node->left;
+                AVLNode* T2  = N2->left;
 
                 N2->left = node;
                 node->right = T2;
 
-                N2->height = max(heightTree(N2->left), heightTree(N2->right)) + 1;
-                node->height = max(heightTree(node->left), heightTree(node->right)) + 1;  
-
                 return N2;
-           
-            return node;
         }
 
 
@@ -318,8 +321,10 @@ class AVLTree {
         }
 
         bool Insert(A data){
-            if(root->Insert(root, data) != NULL)
+            if(root->Insert(root, data) != NULL){
                 return true;
+            }
+            std::cout <<"El dato: " << data <<", ya esta en el arbol \n";    
             return false;
         }
 
@@ -372,7 +377,7 @@ int main(){
     myTree.Insert(9);
     myTree.Insert(5);
     myTree.Insert(10);
-    myTree.Insert(0);
+    myTree.Insert(1);
     myTree.Insert(6);
     myTree.Insert(11);
     myTree.Insert(-1);
@@ -380,11 +385,10 @@ int main(){
     myTree.Insert(2);
     myTree.levelOrderTraversal();
     std::cout<<std::endl;
-    myTree.postOrder();
-    std::cout<<"\n Pre Delete In order traversal \n";
-    myTree.Delete(10);
-    myTree.levelOrderTraversal();
-    std::cout<<"\n Pos Delete In order traversal \n";
+    myTree.preOrder();
+   // myTree.Delete(10);
+    //myTree.levelOrderTraversal();
+    //std::cout<<"\n Pos Delete In order traversal \n";
     return 0;
 }
 

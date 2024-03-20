@@ -277,9 +277,9 @@ int main(){
     root.Insert(70);
     root.Insert(60);
     root.Insert(80);
-    root.levelOrderTraversal();
+    root.inOrder();
     root.Delete(50);
     std::cout<<"\n";
-    root.levelOrderTraversal();
+    root.inOrder();
     return 0;
 }
