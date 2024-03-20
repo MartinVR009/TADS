@@ -40,15 +40,16 @@ class AVLNode
             return (a > b) ? a : b;
         }
 
-        AVLNode* Insert(AVLNode*& root, T data){
+        AVLNode* Insert(AVLNode* root, const T &data){
 
             if(search(root, data)){
                 return NULL;
             }
 
-            if(root == nullptr && !search(root, data)){
-                root = GetNewNode(data);
-            }else if(data < root->data){
+            if(root == nullptr)
+                return GetNewNode(data);
+            
+            if(data < root->data){
                 root->left = Insert(root->left, data);
             }else if(data > root->data){
                 root->right = Insert(root->right, data);
@@ -58,30 +59,37 @@ class AVLNode
 
             int balance = Balance(root); 
             
-            if (balance > 1 && data < root -> left -> data)
-                  return rightRotate(root);
+            //Left Left Case
+            if (balance > 1 && data < root -> left -> data){
+                std::cout<<"L-L case \n";
+                return rightRotate(root);
+            }
+                
 
-                      // Right Right Case  
-                          if (balance  < -1 && data > root -> right -> data)
-                                return leftRotate(root);
-
+            // Right Right Case  
+            if (balance  < -1 && data > root -> right -> data){
+                std::cout<<"R-R case \n";
+                return leftRotate(root);
+            }
             // Left Right Case  
-                if (balance > 1 && data > root -> left -> data) {
-                      root-> left = leftRotate(root -> left);
-                            return rightRotate(root);
-                }
+            if (balance > 1 && data > root -> left -> data) {
+                std::cout<<"L-R case \n";
+                root-> left = leftRotate(root -> left);
+                return rightRotate(root);
+            }
 
               // Right Left Case  
-                if (balance < -1 && data< root-> right -> data) {
-                    root-> right = rightRotate(root -> right);
-                    return leftRotate(root);
-                }
+            if (balance < -1 && data< root-> right -> data) {
+                std::cout<<"R-L case \n";
+                root-> right = rightRotate(root -> right);
+                return leftRotate(root);
+            }
 
             return root; 
         }
 
-        AVLNode* Delete(AVLNode *root, int data) {
-            if (root == NULL) return root;
+        AVLNode* Delete(AVLNode *root, const T &data) {
+            if (root == nullptr) return root;
 
             // Find the node 
             if (data < root->data)
@@ -89,48 +97,44 @@ class AVLNode
             else if (data > root->data)
                 root->right = Delete(root->right, data);
             else {
+                //No child or Leaf
                 if(root->left==nullptr && root ->right ==nullptr ){
-                    delete root;
                     root = nullptr;
-                }
-                // If the node is with only one child or no child
-                if (root->left == nullptr) {
+                    delete root;
+                }else if(root->left == nullptr) {
+                // If the node is with only one child or no child (root->left == nullptr) {
                     AVLNode *temp = root->right;
-                    delete root;
-                    return temp;
+                    *temp = *root;
+                    delete temp;
                 } else if (root->right == nullptr) {
-                    AVLNode *temp = root->left;
-                    delete root;
-                    return temp;
+                    AVLNode *temp = root->right;
+                    *temp = *root;
+                    delete temp;
                 }
-
                     AVLNode *temp = minLeftLeaf(root->right);
                     root->data = temp->data;
                     root->right = Delete(root->right, temp->data);
                 }   
             
-            int balanceFRoot = balance(root);
+            int balance = Balance(root);
 
-            // Left Left Case 
-            if (balanceFRoot > 1 && balance(root->left) >= 0) 
-                return rightRotate(root); 
-            
-                // Left Right Case 
-            if (balanceFRoot > 1 && balance(root->left) < 0) 
-            { 
-                root->left = leftRotate(root->left); 
-                return rightRotate(root); 
-            } 
-            
-                // Right Right Case 
-            if (balanceFRoot < -1 && balance(root->right) <= 0) 
-                return leftRotate(root); 
-            
-                // Right Left Case 
-            if (balanceFRoot < -1 && balance(root->right) > 0) 
-            { 
-                root->right = rightRotate(root->right); 
-                return leftRotate(root); 
+            if (balance > 1 && data < root -> left -> data)
+                  return rightRotate(root);
+
+            // Right Right Case  
+            if (balance  < -1 && data > root -> right -> data)
+                return leftRotate(root);
+
+            // Left Right Case  
+            if (balance > 1 && data > root -> left -> data) {
+                root-> left = leftRotate(root -> left);
+                return rightRotate(root);
+            }
+
+              // Right Left Case  
+            if (balance < -1 && data< root-> right -> data) {
+                root-> right = rightRotate(root -> right);
+                return leftRotate(root);
             } 
             return root;
         }
@@ -247,44 +251,41 @@ class AVLNode
 
         //AVL Additional Functions
 
-        int Balance(AVLNode* node){
-            if(node == nullptr){
-                return 0;
-            }else{
-                return heightTree(node->left) - heightTree(node->right);
-            }
-        }
-
-        AVLNode* rightRotate(AVLNode* node){
+        int Balance(AVLNode* nod){
+           if (nod == nullptr) 
+                return 0; 
+            return heightTree(nod->left) - heightTree(nod->right); 
             
-                AVLNode* N1 = node->left;
-                AVLNode* T2 = N1->right;
-
-                N1->right = node;
-                node->left = T2;
-
-                return N1; 
         }
-        AVLNode* leftRotate(AVLNode* node){
+
+        AVLNode* rightRotate(AVLNode* y){
             
-                AVLNode* N2 = node->right;
-                AVLNode* T2  = N2->left;
+                AVLNode *x = y->left; 
+                AVLNode *T2 = x->right; 
 
-                N2->left = node;
-                node->right = T2;
-
-                return N2;
+                // Perform rotation 
+                x->right = y; 
+                y->left = T2; 
+                return x;  
         }
+        AVLNode* leftRotate(AVLNode* x){
+            
+                AVLNode *y = x->right; 
+                AVLNode *T2 = y->left; 
 
-
+                // Perform rotation 
+                y->left = x; 
+                x->right = T2; 
+                // Return new root 
+                return y; 
+        }
 };
 
 template <typename A>
 class AVLTree {
-    private:
-        AVLNode<A>* root;
-
     public:
+        AVLNode<A>* root = nullptr;
+
         // Constructor predeterminado
         AVLTree() {
             root = nullptr;
@@ -292,13 +293,14 @@ class AVLTree {
 
         // Constructor con un solo argumento para inicializar con un valor
         AVLTree(A var) {
-            root->Insert(var);
+            root->GetNewNode(var);
         }
 
         // Destructor para liberar la memoria asignada a los nodos AVL
         ~AVLTree() {
             deleteTree(root);
         }
+
 
         void deleteTree(AVLNode<A>* node) {
             if (node != nullptr) {
@@ -321,11 +323,11 @@ class AVLTree {
         }
 
         bool Insert(A data){
-            if(root->Insert(root, data) != NULL){
-                return true;
-            }
-            std::cout <<"El dato: " << data <<", ya esta en el arbol \n";    
-            return false;
+            if(search(data))
+                return false;
+
+            this->root = this->root->Insert(root, data);
+            return true;
         }
 
         bool Delete(A data){
@@ -337,11 +339,7 @@ class AVLTree {
         }
 
         bool search(A data){
-            if(root != nullptr){
-                if(root->search(root, data) != NULL)
-                    return true;
-            }
-            return false;
+            return root->search(root, data);
         }
 
         void preOrder(){
@@ -373,11 +371,15 @@ class AVLTree {
 };
 
 int main(){
+    AVLNode<int>* root = nullptr;
+    std::cout<<"\n";
+    //root->levelOrderTraversal(root);
+    std::cout<<"-----Arbol----- \n";
     AVLTree<int> myTree;
     myTree.Insert(9);
     myTree.Insert(5);
     myTree.Insert(10);
-    myTree.Insert(1);
+    myTree.Insert(0);
     myTree.Insert(6);
     myTree.Insert(11);
     myTree.Insert(-1);
@@ -385,10 +387,10 @@ int main(){
     myTree.Insert(2);
     myTree.levelOrderTraversal();
     std::cout<<std::endl;
-    myTree.preOrder();
-   // myTree.Delete(10);
-    //myTree.levelOrderTraversal();
-    //std::cout<<"\n Pos Delete In order traversal \n";
+    myTree.Delete(2);
+    std::cout<<"\n Pos Delete In order traversal \n";
+    myTree.levelOrderTraversal();
+    std::cout<<"\n";
     return 0;
 }
 
