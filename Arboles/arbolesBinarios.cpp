@@ -52,7 +52,7 @@ class BinaryNode
 
     BinaryNode* Delete(BinaryNode *root, int data) {
         // Return if the tree is empty
-        if (root == NULL) return root;
+        if (root == nullptr) return root;
 
         // Find the node to be deleted
         if (data < root->data)
@@ -61,11 +61,11 @@ class BinaryNode
             root->right = Delete(root->right, data);
         else {
             // If the node is with only one child or no child
-            if (root->left == NULL) {
+            if (root->left == nullptr) {
                 BinaryNode *temp = root->right;
                 delete root;
                 return temp;
-            } else if (root->right == NULL) {
+            } else if (root->right == nullptr) {
                 BinaryNode *temp = root->left;
                 delete root;
                 return temp;
