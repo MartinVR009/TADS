@@ -39,6 +39,10 @@ class AVLNode
             return newNode;
         }
 
+        AVLNode* AsignSubTree(AVLNode* &org , AVLNode* &newNode){
+            org = newNode;
+        }
+
         int max(int a, int b){
             return (a > b) ? a : b;
         }
@@ -64,26 +68,22 @@ class AVLNode
             
             //Left Left Case
             if (balance > 1 && data < root -> left -> data){
-                std::cout<<"L-L case \n";
                 return rightRotate(root);
             }
                 
 
             // Right Right Case  
             if (balance  < -1 && data > root -> right -> data){
-                std::cout<<"R-R case \n";
                 return leftRotate(root);
             }
             // Left Right Case  
             if (balance > 1 && data > root -> left -> data) {
-                std::cout<<"L-R case \n";
                 root-> left = leftRotate(root -> left);
                 return rightRotate(root);
             }
 
               // Right Left Case  
             if (balance < -1 && data< root-> right -> data) {
-                std::cout<<"R-L case \n";
                 root-> right = rightRotate(root -> right);
                 return leftRotate(root);
             }
@@ -91,7 +91,7 @@ class AVLNode
             return root; 
         }
 
-        AVLNode* Delete(AVLNode *root, const T &data) {
+        AVLNode* Delete(AVLNode* &root, const T &data) {
             if (root == nullptr) return root;
 
             // Find the node 
@@ -101,19 +101,15 @@ class AVLNode
                 root->right = Delete(root->right, data);
             else {
                     if(root->left == nullptr) {
-                        std::cout<<"Right Child \n";
                         // If the node is with only one child or no child (root->left == nullptr) {
                             AVLNode *temp = root->right;
                             delete root;
-                            print2D(temp, 3);
                             return temp;
                     } else if (root->right == nullptr) {
-                        std::cout<<"Left Child \n";
                             AVLNode *temp = root->right;
                             delete root;
                             return temp;
                     }else{
-                        std::cout<<"2 Childred \n";
                             AVLNode *temp = minLeftLeaf(root->right);
                             root->data = temp->data;
                             root->right = Delete(root->right, temp->data);
@@ -124,19 +120,18 @@ class AVLNode
 
             //Left Left Case
             if (balance == 2 && Balance(root->left) >= 0){
-                  std::cout<<"Right Rotate \n";
-                  print2D(root, 3);
-                  root = rightRotate(root);
-            }else if (balance == 2 && Balance(root->left) == -1){  // Left Right Case  
+                root = rightRotate(root);
+                  
+            }else if (balance == 2 && Balance(root->left) == -1){  // Left Right Case 
                 root->left = leftRotate(root->left);
-                return rightRotate(root);
+                root = rightRotate(root);
             }
             // Left Left Case  
             else if(balance == -2 && Balance(root->right) <= 0 ) {
-                return leftRotate(root);
+                root = leftRotate(root);
             }else if(balance == -2 && Balance(root->right) == 1){
                 root->right = rightRotate(root->right);
-                return leftRotate(root);
+                root = leftRotate(root);
             } 
             return root;
         }
@@ -153,7 +148,6 @@ class AVLNode
         bool search(AVLNode* root, T data){
             if(root == nullptr) return false;
             if(root-> data == data) {
-                std::cout<<" \n El numero " << data << "Ya estaba en la lista! \n";
                 return true;
             }
             else if(data < root-> data) return search(root->left, data);
@@ -199,21 +193,20 @@ class AVLNode
         }
         
 
-        void levelOrderTraversal(AVLNode* root) {
-            if (root == nullptr)
+        void levelOrderTraversal(AVLNode* node) {
+            if (node == nullptr)
                 return;
 
             std::queue<AVLNode*> nodeQueue;
-            nodeQueue.push(root);
+            nodeQueue.push(node);
 
             while (!nodeQueue.empty()) {
                 int levelSize = nodeQueue.size();
-
+                
                 for (int i = 0; i < levelSize; ++i) {
                     AVLNode* currNode = nodeQueue.front();
                     nodeQueue.pop();
-                    std::cout << currNode->data << " ";
-
+                    std::cout<<currNode->data<< " ";
                     if (currNode->left != nullptr)
                         nodeQueue.push(currNode->left);
                     if (currNode->right != nullptr)
@@ -264,18 +257,23 @@ class AVLNode
             AVLNode* father = y->left;
             y->left = father->right;
             father->right = y;
+            //print2D(father, 4);
             return father;
         }
         AVLNode* leftRotate(AVLNode* x){
-            
-                AVLNode *y = x->right; 
+            AVLNode* father = x->right;
+            x->right = father->left;
+            father->left = x;
+            //print2D(father, 4);
+            return father;
+                /*AVLNode *y = x->right; 
                 AVLNode *T2 = y->left; 
 
                 // Perform rotation 
                 y->left = x; 
                 x->right = T2; 
                 // Return new root 
-                return y; 
+                return y; */
         }
 
         void print2D(AVLNode * r, int space) {
@@ -393,25 +391,21 @@ int main(){
     myTree.Insert(9);
     myTree.Insert(5);
     myTree.Insert(10);
-    myTree.Insert(1);
+    myTree.Insert(0);
     myTree.Insert(6);
     myTree.Insert(11);
-    myTree.Insert(0);
+    myTree.Insert(-1);
+    myTree.Insert(1);
     myTree.Insert(2);
-    myTree.Insert(3);
-    myTree.levelOrderTraversal();
-    std::cout <<" \n  \n";
-    myTree.print2D(4);
-    std::cout<<std::endl;
+    std::cout << "Pre Orden before delete: \n";
+    myTree.preOrder();
     myTree.Delete(10);
-    std::cout<<"\n Pos Delete In order traversal \n";
-    myTree.levelOrderTraversal();
-    std::cout <<" \n  \n";
-    myTree.print2D(4);
     std::cout<<"\n";
+    std::cout << "Pre Orden after delete: \n";
+    myTree.preOrder();
+
+    
     return 0;
 }
 
-/*
- // Process left child  7
-  }*/
+
