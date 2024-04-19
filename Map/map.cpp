@@ -8,8 +8,11 @@
 
 
 using setIterator = std::set<std::string>::iterator;
+
 using dictio = std::map<char, std::set<std::string>>;
+
 using dictionaryIterator = std::map<char, std::set<std::string>>::iterator;
+
 
 class Dictionary{
     private:
@@ -25,6 +28,7 @@ class Dictionary{
             // Inicializa el mapa con letras de 'a' a 'z'
             for (char letra = 'a'; letra <= 'z'; letra++) {
                 diccionario[letra];
+                diccionario_reverso[letra];
             }
         }
 
@@ -130,6 +134,7 @@ class Dictionary{
                 std::cout<<"El árbol del diccionario ya ha sido inicializado\n";
                 return;
             }
+
             std::ifstream file(filename);
 
             if(!file.is_open()){
@@ -177,6 +182,7 @@ class Dictionary{
             file.close();
         }
 
+
         void prefijos(std::string Prefix){
             std::cout<<"Palabras con prefijo: " << Prefix <<"\n";
             Prefix = toLowerCase(Prefix);
@@ -188,6 +194,7 @@ class Dictionary{
             }
             std::cout <<"\n-----------------------------------------\n";
         }
+
 
         void sufijos(std::string sufix){
             std::cout<<"Palabras con sufijo: " << sufix <<"\n";
@@ -201,9 +208,6 @@ class Dictionary{
             std::cout <<"\n-----------------------------------------\n";
         }
 };
-
-
-
 
 int main(){
     Dictionary system;
