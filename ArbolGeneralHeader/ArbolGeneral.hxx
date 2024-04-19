@@ -178,12 +178,12 @@
  }
 
  template <class T>
-  int ArbolGeneral<T>::tamano() {
+  unsigned ArbolGeneral<T>::tamano() {
    return tamanoAux(this->raiz);
  }
 
  template <class T>
-  int ArbolGeneral<T>::tamanoAux(NodoGeneral<T>* nodo) {
+  unsigned ArbolGeneral<T>::tamanoAux(NodoGeneral<T>* nodo) {
    if (nodo == nullptr) {
      return 0; // Si el nodo es nullptr, no contribuye al tamaño del árbol.
    }
