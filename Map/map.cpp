@@ -13,7 +13,6 @@ using dictio = std::map<char, std::set<std::string>>;
 
 using dictionaryIterator = std::map<char, std::set<std::string>>::iterator;
 
-
 class Dictionary{
     private:
         dictio diccionario;
